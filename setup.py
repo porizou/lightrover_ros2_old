@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'testtest'
+package_name = 'lightrover_ros2'
 
 setup(
     name=package_name,
@@ -23,4 +23,3 @@ setup(
         ],
     },
 )
-por
