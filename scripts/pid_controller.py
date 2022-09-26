@@ -3,7 +3,7 @@
 
 #このプログラムは、ライトローバーを速度制御するためのノードです。
 
-import rospy2 as rospy
+import rclpy
 import sys
 from lightrover_ros.srv import *
 import time
@@ -12,7 +12,7 @@ import vs_wrc201_motor
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 
-write_msg = rospy.ServiceProxy('wrc201_i2c',Wrc201Msg)
+write_msg = node.create_client(Wrc201Msg, 'wrc201_i2c')
 MU8_TRIG = 0x10
 MS16_FB_PG0 = 0x20
 MS16_FB_PG1 = 0x22
@@ -55,16 +55,16 @@ def drive_motor(r_speed, l_speed):
         write_msg(0,0,0,'s')
 
 def lightrover_pid_controller():
-        rospy.init_node('listenr', anonymous=True)
-
-        rospy.loginfo('Start PID')
+        rclpy.init(args=sys.argv)
+        node = rclpy.create_node('asdf')
+        node.get_logger().info('Start PID')
 
         write_msg(MU8_TRIG,0x03,1,'w')          #エンコーダリセット
         write_msg(MS16_FB_PG0,0,2,'w')          #モータ0位置補償Pゲイン設定
         write_msg(MS16_FB_PG1,0,2,'w')          #モータ1位置補償Pゲイン設定
 
-        rospy.Subscriber('odom',Odometry,get_rover_v)
-        rospy.Subscriber('rover_drive',Twist,set_target_v)
+        node.create_subscription(Odometry, 'odom', get_rover_v)
+        node.create_subscription(Twist, 'rover_drive', set_target_v)
 
         rospy.spin()
 
