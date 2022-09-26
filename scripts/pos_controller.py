@@ -3,16 +3,22 @@
 
 #このプログラムは、ライトローバーを位置制御するためのノードです。
 
-import rospy2 as rospy
+import rclpy
 import sys
-from lightrover_ros.srv import *
+from lightrover_ros2.srv import Wrc201Msg
 import time
 import math
 import vs_wrc201_motor
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 
-write_msg = rospy.ServiceProxy('wrc201_i2c',Wrc201Msg)
+rclpy.init(args=sys.argv)
+node = rclpy.create_node('pos_controller')
+node.get_logger().info('Start POS Controll')
+
+write_msg = node.create_client(Wrc201Msg, 'wrc201_i2c')
+while not write_msg .wait_for_service(timeout_sec=1.0):
+    node.get_logger().info('service not available, waiting again...')
 
 #メモリマップアドレス
 MU8_O_EN = 0x10
@@ -66,11 +72,6 @@ def drive_motor(r_speed, l_speed):
         write_msg(MU8_TRIG,0x03,1,'w')
 
 def pos_cntrl():
-        rospy.init_node('pos_controller', anonymous=True)
-        rospy.wait_for_service('wrc201_i2c')
-
-        rospy.loginfo('Start POS Controll')
-
         write_msg(MU8_O_EN,0x00,1,'w')          #モータ出力禁止
         write_msg(MU8_TRIG,0x0c,1,'w')          #エンコーダリセット
         write_msg(MS16_FB_PG0,0x0080,2,'w')     #モータ0位置補償Pゲイン設定
@@ -79,10 +80,9 @@ def pos_cntrl():
         write_msg(MU16_FB_PCH1,0x09C4,2,'w')    #モータ1最低出力値設定
         write_msg(MU8_O_EN,0x03,1,'w')          #モータ出力許可
 
-        rospy.Subscriber('odom',Odometry,cb_get_rover_v)
-        rospy.Subscriber('rover_drive',Twist,cb_set_target_v)
-
-        rospy.spin()
+        node.create_subscription(Odometry, 'odom', cb_get_rover_v)
+        node.create_subscription(Twist, 'rover_drive', cb_set_target_v)
+        rclpy.spin(node)
 
 if __name__ == '__main__':
         pos_cntrl()
