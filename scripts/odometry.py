@@ -3,13 +3,14 @@
 
 #このプログラムは、ライトローバーのオドメトリを取得するためのノードです。
 
-import rospy2 as rospy
+import rclpy
 import sys
-from lightrover_ros.srv import *
+from lightrover_ros2.srv import Wrc201Msg
 import time
 import math
+import numpy as np
 from geometry_msgs.msg import PoseStamped, TwistStamped, Quaternion ,TransformStamped
-import tf
+from tf2_ros import TransformBroadcaster
 from nav_msgs.msg import Odometry
 
 MS32_M_POS0 = 0x60
@@ -34,7 +35,27 @@ x = 0.0
 y = 0.0
 th = 0.0
 
-read_enc = rospy.ServiceProxy('wrc201_i2c',Wrc201Msg)
+rclpy.init(args=sys.argv)
+node = rclpy.create_node('wrc201_odometry')
+node.get_logger().info('Start calculate odometry')
+
+read_enc = node.create_client(Wrc201Msg, 'wrc201_i2c')
+
+def quaternion_from_euler(roll, pitch, yaw):
+    cy = math.cos(yaw * 0.5)
+    sy = math.sin(yaw * 0.5)
+    cp = math.cos(pitch * 0.5)
+    sp = math.sin(pitch * 0.5)
+    cr = math.cos(roll * 0.5)
+    sr = math.sin(roll * 0.5)
+
+    q = [0] * 4
+    q[0] = cy * cp * cr + sy * sp * sr
+    q[1] = cy * cp * sr - sy * sp * cr
+    q[2] = sy * cp * sr + cy * sp * cr
+    q[3] = sy * cp * cr - cy * sp * sr
+
+    return q
 
 def getEncVal():
 
@@ -92,42 +113,35 @@ def cal_odometry(vx, vth):
         th += delta_th
 
 def lightrover_odometry():
-        rospy.init_node('wrc201_odometry', anonymous=True)
-        rospy.wait_for_service('wrc201_i2c')
+        odom_pub = node.create_publisher(Odometry, 'odom', 50)
+        odom_br = TransformBroadcaster(node)
 
-        odom_pub = rospy.Publisher('odom',Odometry, queue_size=50)
-        odom_br = tf.TransformBroadcaster()
-
-        rate = rospy.Rate(100)
+        rate = node.create_rate(2)
 
         get_val = calSpeed()
 
-        while not rospy.is_shutdown():
+        while not rclpy.ok():
                 get_val = calSpeed()
                 if(get_val is None):
                         continue
                 else:
                         cal_odometry(get_val[0],get_val[1])
 
-                        now_time = rospy.Time.now()
+                        now_time = node.get_clock().now().to_msg()
 
                         odom_tf = TransformStamped()
                         odom_tf.header.stamp = now_time
                         odom_tf.header.frame_id = "odom"
                         odom_tf.child_frame_id = "base_link"
 
-                        odom_quat = tf.transformations.quaternion_from_euler(0, 0, th)
+                        odom_quat = quaternion_from_euler(0, 0, th)
 
                         odom_tf.transform.translation.x = x
                         odom_tf.transform.translation.y = y
                         odom_tf.transform.translation.z = 0
                         odom_tf.transform.rotation = odom_quat
 
-                        odom_br.sendTransform((x,y,0),
-                                        odom_tf.transform.rotation,
-                                        now_time,
-                                        odom_tf.child_frame_id,
-                                        odom_tf.header.frame_id)
+                        odom_br.sendTransform(odom_tf)
 
                         odom = Odometry()
                         odom.header.stamp = now_time
@@ -152,8 +166,4 @@ def lightrover_odometry():
                         rate.sleep()
 
 if __name__=="__main__":
-        rospy.loginfo('Start calculate odometry')
-        try:
-                lightrover_odometry()
-        except rospy.ROSInterruptException:
-                pass
+        lightrover_odometry()
