@@ -5,7 +5,7 @@
 
 import rclpy
 from std_msgs.msg import String
-import vs_wrc201_i2c
+from lightrover_ros2 import vs_wrc201_i2c
 import time
 from lightrover_ros2.srv import Wrc201Msg
 

@@ -1,0 +1,33 @@
+running egg_info
+creating build/lightrover_ros2/lightrover_ros2.egg-info
+writing build/lightrover_ros2/lightrover_ros2.egg-info/PKG-INFO
+writing dependency_links to build/lightrover_ros2/lightrover_ros2.egg-info/dependency_links.txt
+writing entry points to build/lightrover_ros2/lightrover_ros2.egg-info/entry_points.txt
+writing requirements to build/lightrover_ros2/lightrover_ros2.egg-info/requires.txt
+writing top-level names to build/lightrover_ros2/lightrover_ros2.egg-info/top_level.txt
+writing manifest file 'build/lightrover_ros2/lightrover_ros2.egg-info/SOURCES.txt'
+reading manifest file 'build/lightrover_ros2/lightrover_ros2.egg-info/SOURCES.txt'
+writing manifest file 'build/lightrover_ros2/lightrover_ros2.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/porizou/ros2_ws/src/lightrover_ros2/build/lightrover_ros2/build
+creating /home/porizou/ros2_ws/src/lightrover_ros2/build/lightrover_ros2/build/lib
+creating /home/porizou/ros2_ws/src/lightrover_ros2/build/lightrover_ros2/build/lib/lightrover_ros2
+copying lightrover_ros2/__init__.py -> /home/porizou/ros2_ws/src/lightrover_ros2/build/lightrover_ros2/build/lib/lightrover_ros2
+running install
+/usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+  warnings.warn(
+running install_lib
+creating /home/porizou/ros2_ws/src/lightrover_ros2/install/lightrover_ros2/lib/python3.10/site-packages/lightrover_ros2
+copying /home/porizou/ros2_ws/src/lightrover_ros2/build/lightrover_ros2/build/lib/lightrover_ros2/__init__.py -> /home/porizou/ros2_ws/src/lightrover_ros2/install/lightrover_ros2/lib/python3.10/site-packages/lightrover_ros2
+byte-compiling /home/porizou/ros2_ws/src/lightrover_ros2/install/lightrover_ros2/lib/python3.10/site-packages/lightrover_ros2/__init__.py to __init__.cpython-310.pyc
+running install_data
+creating /home/porizou/ros2_ws/src/lightrover_ros2/install/lightrover_ros2/share/ament_index
+creating /home/porizou/ros2_ws/src/lightrover_ros2/install/lightrover_ros2/share/ament_index/resource_index
+creating /home/porizou/ros2_ws/src/lightrover_ros2/install/lightrover_ros2/share/ament_index/resource_index/packages
+copying resource/lightrover_ros2 -> /home/porizou/ros2_ws/src/lightrover_ros2/install/lightrover_ros2/share/ament_index/resource_index/packages
+copying package.xml -> /home/porizou/ros2_ws/src/lightrover_ros2/install/lightrover_ros2/share/lightrover_ros2
+running install_egg_info
+Copying build/lightrover_ros2/lightrover_ros2.egg-info to /home/porizou/ros2_ws/src/lightrover_ros2/install/lightrover_ros2/lib/python3.10/site-packages/lightrover_ros2-0.0.0-py3.10.egg-info
+running install_scripts
+writing list of installed files to '/home/porizou/ros2_ws/src/lightrover_ros2/build/lightrover_ros2/install.log'

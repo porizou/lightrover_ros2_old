@@ -20,6 +20,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'i2c_controller = lightrover_ros2.i2c_controller:main',
+            'pos_controller = lightrover_ros2.pos_controller:main',
+            'odometry = lightrover_ros2.odometry:main'
         ],
     },
 )

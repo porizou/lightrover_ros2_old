@@ -8,7 +8,7 @@ import sys
 from lightrover_ros2.srv import Wrc201Msg
 import time
 import math
-import vs_wrc201_motor
+from lightrover_ros2 import vs_wrc201_motor
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 
